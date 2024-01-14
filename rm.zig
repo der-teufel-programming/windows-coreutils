@@ -7,11 +7,9 @@ fn oom(err: std.mem.Allocator.Error) noreturn {
 
 fn usage() !void {
     const stderr = std.io.getStdErr().writer();
-    try stderr.writeAll(
-        "Usage: rm [-rf] FILE...\n" ++
+    try stderr.writeAll("Usage: rm [-rf] FILE...\n" ++
         "    -r recurse\n" ++
-        "    -f force remove (never prompt)\n"
-    );
+        "    -f force remove (never prompt)\n");
 }
 
 pub fn main() !u8 {

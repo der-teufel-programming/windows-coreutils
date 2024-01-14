@@ -47,17 +47,19 @@ pub fn init(file: std.fs.File, opt: Options) !MappedFile {
                 .read_only => win32.FILE_MAP_READ,
                 .read_write => win32.FILE_MAP_READ | win32.FILE_MAP_WRITE,
             },
-            0, 0, 0,
+            0,
+            0,
+            0,
         ) orelse return switch (win32.GetLastError()) {
             // TODO: handle some error codes
             else => |err| std.os.windows.unexpectedError(err),
         };
         errdefer std.debug.assert(0 != win32.UnmapViewOfFile(ptr));
-        
+
         return .{
-            .mem = @as([*]align(std.mem.page_size)u8, @alignCast(@ptrCast(ptr)))[0 .. file_size],
+            .mem = @as([*]align(std.mem.page_size) u8, @alignCast(@ptrCast(ptr)))[0..file_size],
             .mapping = mapping,
-        };        
+        };
     }
     return .{
         .mem = try std.os.mmap(
@@ -72,9 +74,9 @@ pub fn init(file: std.fs.File, opt: Options) !MappedFile {
             0,
         ),
         .mapping = {},
-    };    
+    };
 }
-             
+
 pub fn unmap(self: MappedFile) void {
     if (builtin.os.tag == .windows) {
         if (self.mem.len != 0) {

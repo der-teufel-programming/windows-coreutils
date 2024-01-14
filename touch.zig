@@ -14,7 +14,7 @@ pub fn main() !u8 {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     const allocator = arena.allocator();
-    
+
     const all_args = try std.process.argsAlloc(allocator);
     // no need to free
 

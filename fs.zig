@@ -7,14 +7,13 @@ pub const OpenOptions = struct {
 
 pub fn open(dir: std.fs.Dir, path: []const u8, opt: OpenOptions) !std.fs.File {
     if (builtin.os.tag == .windows) {
-        const path_w = try std.os.windows.sliceToPrefixedFileW(path);
+        const path_w = try std.os.windows.sliceToPrefixedFileW(dir.fd, path);
         return std.fs.File{
             .handle = try std.os.windows.OpenFile(path_w.span(), .{
                 .dir = dir.fd,
                 .access_mask = switch (opt.mode) {
                     .read_only => std.os.windows.SYNCHRONIZE | std.os.windows.GENERIC_READ,
-                    .read_write =>
-                        std.os.windows.SYNCHRONIZE |
+                    .read_write => std.os.windows.SYNCHRONIZE |
                         std.os.windows.GENERIC_READ |
                         std.os.windows.GENERIC_WRITE,
                 },
